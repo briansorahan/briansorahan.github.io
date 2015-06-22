@@ -1,0 +1,21 @@
+---
+layout: post
+title: Designing for Documentation
+---
+
+h1. {{ page.title }}
+
+p(meta). 22 June 2015 - Austin, TX
+
+This post is about a particular decision that I made in the design of the [synthdef](http://doc.sccode.org/Classes/SynthDef.html)
+representations for [sc](https://github.com/scgolang/sc). The particular decision under consideration is a great example of where
+I felt like it was necessary to deviate from sclang to do something that made sense for Go.
+
+Originally, I wanted the synthdef representations for sc to look as similar as possible to sclang's. As an example, we will
+consider a simple synthdef written in sclang:
+
+{% highlight javascript %}
+SynthDef('simple', {
+    Out.ar(0, SinOsc.ar(440));
+});
+{% endhighlight %}
