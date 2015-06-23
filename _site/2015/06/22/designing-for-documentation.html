@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
 <head>
    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-   <title>Designing for Documentation</title>
+   <title>Introducing the sc package</title>
    <meta name="author" content="Brian Sorahan" />
    <!-- <link href="http://feeds.feedburner.com/tom-preston-werner" rel="alternate" title="Tom Preston-Werner" type="application/atom+xml" />
    <meta name="readability-verification" content="QCzSs992GxmRYRKVpPeZ6LE2tS8aYKxsSSQKV8YM"/> -->
@@ -31,16 +31,32 @@ var WRInitTime=(new Date()).getTime();
   </div>
 
   <div id="post">
-<h1>Designing for Documentation</h1>
+<h1>Introducing the sc package</h1>
 <p class="meta">22 June 2015 &#8211; Austin, TX</p>
-<p>This post is about a particular decision that I made in the design of the [synthdef](http://doc.sccode.org/Classes/SynthDef.html)<br />
-representations for [sc](https://github.com/scgolang/sc). The particular decision under consideration is a great example of where<br />
-I felt like it was necessary to deviate from sclang to do something that made sense for Go.</p>
-<p>Originally, I wanted the synthdef representations for sc to look as similar as possible to sclang&#8217;s. As an example, we will<br />
-consider a simple synthdef written in sclang:</p>
+<p>I started working on a SuperCollider client package for Google Go in late March of this year. I&#8217;m doing this for fun, but also because I love the power of scsynth, loathe programming with sclang, and love programming with Go. In this post I&#8217;ll talk about where the project is right now and where I&#8217;d like it to go. I&#8217;m going to assume a fair amount of knowledge about how SuperCollider works, I recommend reading these two pages:<br />
+* <a href="http://doc.sccode.org/Guides/ClientVsServer.html">Client vs. Server</a><br />
+* <a href="http://doc.sccode.org/Guides/UGens-and-Synths.html">Unit Generators and Synths</a></p>
+<h2>Why Go?</h2>
+<p>Go is</p>
+<ol>
+	<li>Easy to learn</li>
+	<li>Relatively fast</li>
+</ol>
+<h2>What is a SynthDef?</h2>
+<p>Every sound that you create with SuperCollider is defined with a synthdef. Here is a synthdef (expressed in sclang) that generates a 440Hz sine tone:<br />
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">SynthDef</span><span class="p">(</span><span class="s1">&#39;simple&#39;</span><span class="p">,</span> <span class="p">{</span>
     <span class="nx">Out</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">SinOsc</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mi">440</span><span class="p">));</span>
-<span class="p">});</span></code></pre></div>
+<span class="p">});</span></code></pre></div></p>
+<p>To tell scsynth about this synthdef you need to send an <span class="caps">OSC</span> message that contains a <a href="http://doc.sccode.org/Reference/Synth-Definition-File-Format.html">blob of binary data</a> which describes the structure of the synthdef. This is done by calling a method on the SynthDef object:<br />
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">SynthDef</span><span class="p">(</span><span class="s1">&#39;simple&#39;</span><span class="p">,</span> <span class="p">{</span>
+    <span class="nx">Out</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">SinOsc</span><span class="p">.</span><span class="nx">ar</span><span class="p">(</span><span class="mi">440</span><span class="p">));</span>
+<span class="p">}).</span><span class="nx">add</span><span class="p">;</span></code></pre></div></p>
+<p>You can then tell scsynth to create a synth node based on the synthdef:<br />
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">x</span> <span class="o">=</span> <span class="nx">Synth</span><span class="p">.</span><span class="k">new</span><span class="p">(</span><span class="s1">&#39;simple&#39;</span><span class="p">);</span></code></pre></div></p>
+<p>When I first started writing the sc package I wanted synthdefs to look very familiar, which looked like this:<br />
+<div class="highlight"><pre><code class="language-go" data-lang="go"><span class="nx">def</span> <span class="o">:=</span> <span class="nx">NewSynthDef</span><span class="p">(</span><span class="s">&quot;simple&quot;</span><span class="p">,</span> <span class="kd">func</span><span class="p">(</span><span class="nx">p</span> <span class="o">*</span><span class="nx">Params</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">Out</span><span class="p">.</span><span class="nx">Ar</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nx">SinOsc</span><span class="p">.</span><span class="nx">Ar</span><span class="p">(</span><span class="mi">440</span><span class="p">));</span>
+<span class="p">})</span></code></pre></div></p>
 </div>
 
 <div id="related">
