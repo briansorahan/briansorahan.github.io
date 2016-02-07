@@ -81,7 +81,6 @@ index: 0
        name: <bluez_sink.00_15_00_00_03_D9>
        ...
 {% endhighlight %}
-<br/>
 
 Next all I had to do was start spotify, and voila! I was streaming great-sounding audio to the radio from my Arch laptop.
 
