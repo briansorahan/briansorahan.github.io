@@ -26,8 +26,7 @@ I added myself to the <code>lp</code> group since the bluetooth daemon will only
 After powering up the radio I set the source to Bluetooth, and hit the Pair button.
 A blue light on the device starts blinking until you pair with it from another device.
 
-Next I followed the "cli instructions":https://wiki.archlinux.org/index.php/bluetooth#Configuration_via_the_CLI
-to connect to the radio.
+Next I followed the "cli instructions":https://wiki.archlinux.org/index.php/bluetooth#Configuration_via_the_CLI to connect to the radio.
 
 {% highlight shell %}
 [brian@arch bluez-tools]$ hcitool scan
@@ -82,6 +81,7 @@ index: 0
        name: <bluez_sink.00_15_00_00_03_D9>
        ...
 {% endhighlight %}
+<br/>
 
 h2. Conclusion
 
