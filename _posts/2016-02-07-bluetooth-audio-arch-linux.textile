@@ -8,25 +8,20 @@ h1. {{ page.title }}
 p(meta). 07 Feb 2016 - Austin, TX
 
 <p>
-My wife and I got an "iLive IKB333s":http://iliveelectronics.com/products/bluetooth/wireless-bluetooth-under-cabinet-music-system.html
-under-cabinet bluetooth radio for Christmas this year and she said she wanted to be
-able to stream audio from our Arch Linux laptop in the living room to it.
-I decided to blog about what it was like to get this working because it's my first time
-using bluetooth on Linux, and because it was successful.
+My wife and I got an "iLive IKB333s":http://iliveelectronics.com/products/bluetooth/wireless-bluetooth-under-cabinet-music-system.html under-cabinet bluetooth radio for Christmas this year and she said she wanted to be able to stream audio from our Arch Linux laptop in the living room to it.
+I decided to blog about what it was like to get this working because it's my first time using bluetooth on Linux, and because it was successful.
 </p>
 
+h2. TL;DR
 <p>
-TL;DR
 The way I got this working was using "pulseaudio-bluetooth":https://www.archlinux.org/packages/?name=pulseaudio-bluetooth
 (since we want to stream audio from Spotify, which uses pulse), and set the default sink to the bluetooth sink.
 </p>
 
 <p>
-I had to steal the "USB dongle":http://www.amazon.com/JBtek-Raspberry-Bluetooth-4-0-adapter/dp/B00L08NCPQ/ref=cm_cr_pr_product_top?ie=UTF8
-that I bought for my raspberry pi to get bluetooth on my laptop (Toshiba Satellite L645).
-After this I installed all the packages recommended "here":https://wiki.archlinux.org/index.php/bluetooth
-and "here":https://wiki.archlinux.org/index.php/Bluetooth_headset.
-I added myself to the `lp` group since the bluetooth daemon will only give out bnep0 devices to users who are in this group.
+I had to steal the "USB dongle":http://www.amazon.com/JBtek-Raspberry-Bluetooth-4-0-adapter/dp/B00L08NCPQ/ref=cm_cr_pr_product_top?ie=UTF8 that I bought for my raspberry pi to get bluetooth on my laptop (Toshiba Satellite L645).
+After this I installed all the packages recommended "here":https://wiki.archlinux.org/index.php/bluetooth and "here":https://wiki.archlinux.org/index.php/Bluetooth_headset.
+I added myself to the <code>lp</code> group since the bluetooth daemon will only give out bnep0 devices to users who are in this group.
 </p>
 
 <p>
@@ -38,7 +33,7 @@ A blue light on the device starts blinking until you pair with it from another d
 Next I followed the "cli instructions":https://wiki.archlinux.org/index.php/bluetooth#Configuration_via_the_CLI
 to connect to the radio.
 
-```
+{% highlight shell %}
 [brian@arch bluez-tools]$ hcitool scan
 Scanning ...
 	 00:15:00:00:03:D9	IKB333
@@ -68,13 +63,13 @@ Attempting to connect to 00:15:00:00:03:D9
 [CHG] Device 00:15:00:00:03:D9 Connected: yes
 Connection successful
 [IKB333]#
-```
+{% endhighlight %}
 </p>
 
 <p>
 Next I set the default pulseaudio sink to the bluetooth device
 
-```
+{% highlight shell %}
 [brian@arch ~]$ pacmd list-sinks
 2 sink(s) available.
 * index: 0
@@ -92,10 +87,10 @@ index: 0
 * index: 1
        name: <bluez_sink.00_15_00_00_03_D9>
        ...
-```
+{% endhighlight %}
 </p>
 
-.h3 Conclusion
+h2. Conclusion
 <p>
 As always, the arch wiki was extremely helpful in getting bluetooth audio working.
 </p>
