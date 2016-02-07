@@ -83,7 +83,9 @@ index: 0
 {% endhighlight %}
 <br/>
 
+Next all I had to do was start spotify, and voila! I was streaming great-sounding audio to the radio from my Arch laptop.
+
 h2. Conclusion
 
-As always, the "arch wiki":https://wiki.archlinux.org/ was _extremely_ helpful.
-Because arch maintainers create such good documentation, it was really painless to stream audio from my laptop to the bluetooth radio.
+As always, the "arch wiki":https://wiki.archlinux.org/ was _extremely_ helpful. Because arch maintainers create such good documentation, it was really painless to stream audio from my laptop to the bluetooth radio.
+I _have_ experienced loss of quality occasionally. Bringing the laptop closer to the radio fixes it, but I'd like to figure out what I can do to avoid this.
