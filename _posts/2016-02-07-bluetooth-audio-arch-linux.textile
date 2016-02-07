@@ -1,0 +1,101 @@
+---
+layout: post
+title: Bluetooth Audio on Arch Linux
+---
+
+h1. {{ page.title }}
+
+p(meta). 07 Feb 2016 - Austin, TX
+
+<p>
+My wife and I got an "iLive IKB333s":http://iliveelectronics.com/products/bluetooth/wireless-bluetooth-under-cabinet-music-system.html
+under-cabinet bluetooth radio for Christmas this year and she said she wanted to be
+able to stream audio from our Arch Linux laptop in the living room to it.
+I decided to blog about what it was like to get this working because it's my first time
+using bluetooth on Linux, and because it was successful.
+</p>
+
+<p>
+TL;DR
+The way I got this working was using "pulseaudio-bluetooth":https://www.archlinux.org/packages/?name=pulseaudio-bluetooth
+(since we want to stream audio from Spotify, which uses pulse), and set the default sink to the bluetooth sink.
+</p>
+
+<p>
+I had to steal the "USB dongle":http://www.amazon.com/JBtek-Raspberry-Bluetooth-4-0-adapter/dp/B00L08NCPQ/ref=cm_cr_pr_product_top?ie=UTF8
+that I bought for my raspberry pi to get bluetooth on my laptop (Toshiba Satellite L645).
+After this I installed all the packages recommended "here":https://wiki.archlinux.org/index.php/bluetooth
+and "here":https://wiki.archlinux.org/index.php/Bluetooth_headset.
+I added myself to the `lp` group since the bluetooth daemon will only give out bnep0 devices to users who are in this group.
+</p>
+
+<p>
+After powering up the radio I set the source to Bluetooth, and hit the Pair button.
+A blue light on the device starts blinking until you pair with it from another device.
+</p>
+
+<p>
+Next I followed the "cli instructions":https://wiki.archlinux.org/index.php/bluetooth#Configuration_via_the_CLI
+to connect to the radio.
+
+```
+[brian@arch bluez-tools]$ hcitool scan
+Scanning ...
+	 00:15:00:00:03:D9	IKB333
+[brian@arch bluez-tools]$ bluetoothctl
+[NEW] Controller 00:1A:7D:DA:71:13 arch [default]
+Drive
+[NEW] Device DB:94:B9:E3:29:6B IKB333
+[bluetooth]# scan on
+Discovery started
+[CHG] Controller 00:1A:7D:DA:71:13 Discovering: yes
+[NEW] Device 00:15:00:00:03:D9 IKB333
+[bluetooth]# scan off
+[CHG] Device 00:15:00:00:03:D9 RSSI is nil
+[CHG] Controller 00:1A:7D:DA:71:13 Discovering: no
+Discovery stopped
+[bluetooth]# pair 00:15:00:00:03:D9
+Attempting to pair with 00:15:00:00:03:D9
+[CHG] Device 00:15:00:00:03:D9 Connected: yes
+[CHG] Device 00:15:00:00:03:D9 UUIDs: 0000110b-0000-1000-8000-00805f9b34fb
+[CHG] Device 00:15:00:00:03:D9 UUIDs: 0000110c-0000-1000-8000-00805f9b34fb
+[CHG] Device 00:15:00:00:03:D9 UUIDs: 0000110e-0000-1000-8000-00805f9b34fb
+[CHG] Device 00:15:00:00:03:D9 Paired: yes
+Pairing successful
+[CHG] Device 00:15:00:00:03:D9 Connected: no
+[bluetooth]# connect 00:15:00:00:03:D9
+Attempting to connect to 00:15:00:00:03:D9
+[CHG] Device 00:15:00:00:03:D9 Connected: yes
+Connection successful
+[IKB333]#
+```
+</p>
+
+<p>
+Next I set the default pulseaudio sink to the bluetooth device
+
+```
+[brian@arch ~]$ pacmd list-sinks
+2 sink(s) available.
+* index: 0
+       name: <alsa_output.pci-0000_00_1b.0.analog-stereo>
+       ...
+index: 1
+       name: <bluez_sink.00_15_00_00_03_D9>
+       ...
+[brian@arch ~]$ pacmd set-default-sink 1
+[brian@arch ~]$ pacmd list-sinks
+2 sink(s) available.
+index: 0
+       name: <alsa_output.pci-0000_00_1b.0.analog-stereo>
+       ...
+* index: 1
+       name: <bluez_sink.00_15_00_00_03_D9>
+       ...
+```
+</p>
+
+.h3 Conclusion
+<p>
+As always, the arch wiki was extremely helpful in getting bluetooth audio working.
+</p>
